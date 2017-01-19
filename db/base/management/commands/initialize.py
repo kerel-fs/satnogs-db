@@ -7,12 +7,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Migrate
+        self.stdout.write("Creating database...")
         call_command('migrate')
 
+        # Bower
+        self.stdout.write("Downloading frontend libraries...")
+        call_command('bower_install')
+
         #  Initial data
+        self.stdout.write("Creating fixtures...")
         call_command('loaddata', 'modes')
         call_command('loaddata', 'satellites')
         call_command('loaddata', 'transmitters')
 
         # Create superuser
+        self.stdout.write("Creating a superuser...")
         call_command('createsuperuser')

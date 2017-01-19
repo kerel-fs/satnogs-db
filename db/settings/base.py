@@ -1,4 +1,6 @@
 from os import path, getenv
+import dj_database_url
+
 BASE_DIR = path.dirname(path.dirname(__file__))
 
 # Apps
@@ -17,11 +19,15 @@ THIRD_PARTY_APPS = (
     'allauth.account',
     'crispy_forms',
     'compressor',
+    'djangobower',
 )
 LOCAL_APPS = (
     'db.base',
     'db.api',
 )
+BOWER_INSTALLED_APPS = (
+)
+
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 # Middlware
@@ -61,28 +67,32 @@ USE_L10N = True
 USE_TZ = True
 
 # Templates
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [path.join(BASE_DIR, 'templates')],
+        'OPTIONS': {
+            'debug': False,
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'db.base.context_processors.analytics',
+                'db.base.context_processors.stage_notice',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+        },
 
-    'allauth.account.context_processors.account',
-
-    'db.base.context_processors.analytics',
-    'db.base.context_processors.stage_notice',
-)
-TEMPLATE_DIRS = (
-    path.join(BASE_DIR, 'templates'),
-)
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+    },
+]
 
 # Static & Media
 STATIC_ROOT = path.join(path.dirname(BASE_DIR), 'staticfiles')
@@ -94,8 +104,9 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'djangobower.finders.BowerFinder',
 )
-MEDIA_ROOT = path.join(BASE_DIR, 'media')
+MEDIA_ROOT = path.join(path.dirname(BASE_DIR), 'media')
 MEDIA_URL = '/media/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 SATELLITE_DEFAULT_IMAGE = '/static/img/sat.png'
@@ -178,6 +189,9 @@ REST_FRAMEWORK = {
 SECRET_KEY = getenv('SECRET_KEY', 'changeme')
 
 # Database
-import dj_database_url
 DATABASE_URL = getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
 DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+
+# NETWORK API
+NETWORK_API_ENDPOINT = getenv('NETWORK_API_ENDPOINT', 'https://network.satnogs.org/api/')
+DATA_FETCH_DAYS = getenv('DATA_FETCH_DAYS', 10)

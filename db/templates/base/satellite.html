@@ -1,26 +1,52 @@
 {% extends "base/home.html" %}
 
 {% load tags %}
+{% load staticfiles %}
 
 {% block title %} - Suggest{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker/daterangepicker.css' %}">
+{% endblock %}
 
 {% block top %}{% endblock %}
 
 {% block content %}
+
+  <!-- Satellite Overview Section -->
   <div class="row">
     <div class="col-md-12 satellite-panels">
       <div class="panel panel-default panel-satellite">
+        <div class="panel-heading">
+          <div class="satellite-title">
+            {{ satellite }}
+          </div>
+        </div>
         <div class="row panel-body">
           <div class="col-md-3 panel-satellite">
-            <div class="satellite-title">
-              {{ satellite }}
-            </div>
             <div>
               {{ satellite.names }}
             </div>
             <div>
               <img src="{{ satellite.get_image }}" alt="{{ satellite.name }}" class="satellite-img-full">
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transmitters Section -->
+  <div class="row">
+    <div class="col-md-12 satellite-panels">
+      <div class="panel panel-default panel-satellite">
+        <div class="panel-heading">
+          <div class="satellite-title">
+            Transmitters
+          </div>
+        </div>
+        <div class="row panel-body">
+          <div class="col-md-3 panel-satellite">
             {% if suggestions %}
               <div class="suggestions-counter label label-primary">
                 {{ suggestions.count }} suggestion{{ suggestions.count|pluralize }} pending
@@ -38,7 +64,7 @@
             <div class="row">
               {% for transmitter in satellite.transmitters.all %}
                 <div class="col-md-6">
-                  <div class="panel panel-primary panel-transmitter">
+                  <div class="panel {% if transmitter.alive %}panel-primary{% else %}panel-danger{% endif %} panel-transmitter">
                     <div class="panel-heading">
                       <h3 class="panel-title">
                         <span class="transmitter-title">{{ transmitter.description }}</span>
@@ -65,16 +91,16 @@
                           {% include "includes/field.html" with name="Baud" value=transmitter.baud %}
                         {% endif %}
                         {% if transmitter.uplink_low %}
-                          {% include "includes/field.html" with name="Uplink Low" value=transmitter.uplink_low|frq %}
+                          {% include "includes/field.html" with name="Uplink Low" value=transmitter.uplink_low|frq hz=transmitter.uplink_low %}
                         {% endif %}
                         {% if transmitter.uplink_high %}
-                          {% include "includes/field.html" with name="Uplink High" value=transmitter.uplink_high|frq %}
+                          {% include "includes/field.html" with name="Uplink High" value=transmitter.uplink_high|frq hz=transmitter.uplink_high %}
                         {% endif %}
                         {% if transmitter.downlink_low %}
-                          {% include "includes/field.html" with name="Downlink Low" value=transmitter.downlink_low|frq %}
+                          {% include "includes/field.html" with name="Downlink Low" value=transmitter.downlink_low|frq hz=transmitter.downlink_low %}
                         {% endif %}
                         {% if transmitter.downlink_high %}
-                          {% include "includes/field.html" with name="Downlink High" value=transmitter.downlink_high|frq %}
+                          {% include "includes/field.html" with name="Downlink High" value=transmitter.downlink_high|frq hz=transmitter.downlink_high %}
                         {% endif %}
                       </div>
                     </div>
@@ -203,16 +229,16 @@
                             {% include "includes/field.html" with name="Baud" value=suggestion.baud original=suggestion.transmitter.baud %}
                           {% endif %}
                           {% if suggestion.uplink_low %}
-                            {% include "includes/field.html" with name="Uplink Low" value=suggestion.uplink_low|frq original=suggestion.transmitter.uplink_low|frq %}
+                            {% include "includes/field.html" with name="Uplink Low" value=suggestion.uplink_low|frq original=suggestion.transmitter.uplink_low|frq hz=transmitter.uplink_low %}
                           {% endif %}
                           {% if suggestion.uplink_high %}
-                            {% include "includes/field.html" with name="Uplink High" value=suggestion.uplink_high|frq original=suggestion.transmitter.uplink_high|frq %}
+                            {% include "includes/field.html" with name="Uplink High" value=suggestion.uplink_high|frq original=suggestion.transmitter.uplink_high|frq hz=transmitter.uplink_high %}
                           {% endif %}
                           {% if suggestion.downlink_low %}
-                            {% include "includes/field.html" with name="Downlink Low" value=suggestion.downlink_low|frq original=suggestion.transmitter.downlink_low|frq %}
+                            {% include "includes/field.html" with name="Downlink Low" value=suggestion.downlink_low|frq original=suggestion.transmitter.downlink_low|frq hz=transmitter.downlink_low %}
                           {% endif %}
                           {% if suggestion.downlink_high %}
-                            {% include "includes/field.html" with name="Downlink High" value=suggestion.downlink_high|frq original=suggestion.transmitter.downlink_high|frq %}
+                            {% include "includes/field.html" with name="Downlink High" value=suggestion.downlink_high|frq original=suggestion.transmitter.downlink_high|frq hz=transmitter.downlink_high %}
                           {% endif %}
                           {% if suggestion.citation %}
                             {% include "includes/field.html" with name="Citation" value=suggestion.citation|urlizetrunc:35 %}
@@ -236,6 +262,37 @@
       </div>
     </div>
   </div>
+
+  <!-- Telemetry Section -->
+  <div id="telemetry" class="row hidden-xs hidden-sm">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 satellite-panels">
+      <div class="panel panel-default panel-satellite">
+        <div class="panel-heading">
+          <div class="satellite-title" id="telemetry-block" data-satid="{{ satellite.norad_cat_id }}">
+            Telemetry
+          </div>
+        </div>
+        <div class="row panel-body">
+          <div class="panel-satellite chart">
+            <div class="col-md-3 panel-satellite">
+              <div class="input-group datepicker">
+                <span class="input-group-addon">Date range</span>
+                <input type="text" name="daterange"/>
+              </div>
+              <ul id="telemetry-descriptors">
+              </ul>
+              <div id="data-available" class="text-danger">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script id="telemetryDescriptorsTemplate" type="text/template">
+      <li class="list-group-item telemetry-key" data-key="<%- key %>" data-unit="<%- unit %>"><%- description %></li>
+  </script>
 
   <!-- Suggestion Modal -->
   <div class="modal fade" id="NewSuggestionModal" tabindex="-1" role="dialog" aria-labelledby="NewSuggestionModalLabel" aria-hidden="true">
@@ -312,4 +369,16 @@
       </div>
     </div>
   </div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+  <script src="{% static 'lib/underscore/underscore-min.js' %}"></script>
+  <script src="{% static 'lib/backbone/backbone-min.js' %}"></script>
+  <script src="{% static 'lib/d3/d3.min.js' %}"></script>
+  <script src="{% static 'lib/moment/moment.js' %}"></script>
+  <script src="{% static 'lib/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'js/app.backbone.js' %}"></script>
 {% endblock %}

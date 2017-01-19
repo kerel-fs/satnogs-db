@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 
-from db.base.models import Mode, Satellite, Transmitter, Suggestion
+from db.base.models import Mode, Satellite, Transmitter, Suggestion, DemodData
 
 logger = logging.getLogger('db')
 
@@ -25,7 +25,7 @@ class SatelliteAdmin(admin.ModelAdmin):
 class TransmitterAdmin(admin.ModelAdmin):
     list_display = ('uuid', 'description', 'satellite', 'uplink_low',
                     'uplink_high', 'downlink_low', 'downlink_high')
-    search_fields = ('satellite', 'uuid',)
+    search_fields = ('satellite__id', 'uuid',)
     list_filter = ('mode', 'invert')
     readonly_fields = ('uuid', 'satellite', 'approved',)
 
@@ -47,9 +47,9 @@ class SuggestionAdmin(admin.ModelAdmin):
                 transmitter.update_from_suggestion(obj)
                 obj.delete()
             except (Transmitter.DoesNotExist, AttributeError):
-                obj.approved=True
-                obj.citation=''
-                obj.user=None
+                obj.approved = True
+                obj.citation = ''
+                obj.user = None
                 obj.save()
 
             # Notify user
@@ -95,3 +95,13 @@ class SuggestionAdmin(admin.ModelAdmin):
         else:
             return '-'
     transmitter_data.allow_tags = True
+
+
+@admin.register(DemodData)
+class DemodDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'data_id', 'satellite')
+    search_fields = ('data_id', 'transmitter')
+    readonly_fields = ('data_id', 'transmitter', 'payload')
+
+    def satellite(self, obj):
+        return obj.transmitter.satellite
