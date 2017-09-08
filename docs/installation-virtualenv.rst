@@ -17,7 +17,7 @@ Requirements: You will need python, python-virtualenvwrapper, pip and git
 
    Set your environmental variables::
 
-     $ cp .env-dist .env
+     $ cp env-dist .env
 
    Activate your python virtual environment::
 
