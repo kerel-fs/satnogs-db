@@ -29,6 +29,12 @@
           {% if satellite.names %}
             <div class="satellite-names-full hidden-xs">{{ satellite.names }}</div>
           {% endif %}
+          <div>
+            <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+            <a href="https://network.satnogs.org/observations/?norad={{ satellite.norad_cat_id }}" target="_blank">
+              SatNOGS Network Observations
+            </a>
+          </div>
         </div>
         <div class="row panel-body">
           <div class="col-sm-3">
