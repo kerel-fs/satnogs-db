@@ -242,7 +242,13 @@ CSP_IMG_SRC = (
     'https://*.gravatar.com',
     'https://*.mapbox.com',
     'https://*.google-analytics.com',
+    'data:',
+    'blob:',
 )
+CSP_CHILD_SRC = (
+    'blob:',
+)
+
 SECURE_HSTS_SECONDS = getenv('SECURE_HSTS_SECONDS', 31536000)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
