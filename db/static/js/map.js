@@ -3,7 +3,9 @@
 $(document).ready(function() {
     'use strict';
 
-    var url = $('.satellite-title').data('url');
+    var name = $('div#map').data('name');
+    var tle1 = $('div#map').data('tle1');
+    var tle2 = $('div#map').data('tle2');
     var mapboxid = $('div#map').data('mapboxid');
     var mapboxtoken = $('div#map').data('mapboxtoken');
 
@@ -150,17 +152,6 @@ $(document).ready(function() {
 
     }
 
-    (function init_worker() {
-        $.ajax({
-            url: url,
-            success: function(data) {
-                if (('name' in data) && ('tle1' in data) && ('tle2' in data)) {
-                    initialize_map(data.name, data.tle1, data.tle2);
-                    setInterval(update_map, 5000);
-                } else {
-                    $('div#map').hide();
-                }
-            }
-        });
-    })();
+    initialize_map(name, tle1, tle2);
+    setInterval(update_map, 5000);
 });
