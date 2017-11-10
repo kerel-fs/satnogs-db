@@ -100,7 +100,6 @@ def satellite(request, norad):
                                                    'modes': modes,
                                                    'latest_frame': latest_frame,
                                                    'telemetry_data_count': telemetry_data_count,
-                                                   'mapbox_id': settings.MAPBOX_MAP_ID,
                                                    'mapbox_token': settings.MAPBOX_TOKEN})
 
 

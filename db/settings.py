@@ -269,7 +269,6 @@ SATELLITE_POSITION_ENDPOINT = getenv('SATELLITE_POSITION_ENDPOINT',
 
 # Mapbox API
 MAPBOX_GEOCODE_URL = 'https://api.tiles.mapbox.com/v4/geocode/mapbox.places/'
-MAPBOX_MAP_ID = getenv('MAPBOX_MAP_ID', '')
 MAPBOX_TOKEN = getenv('MAPBOX_TOKEN', '')
 
 # Metrics

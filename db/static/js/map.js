@@ -6,7 +6,6 @@ $(document).ready(function() {
     var name = $('div#map').data('name');
     var tle1 = $('div#map').data('tle1');
     var tle2 = $('div#map').data('tle2');
-    var mapboxid = $('div#map').data('mapboxid');
     var mapboxtoken = $('div#map').data('mapboxtoken');
 
     mapboxgl.accessToken = mapboxtoken;
