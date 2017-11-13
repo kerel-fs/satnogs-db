@@ -2,6 +2,8 @@ import ephem
 import logging
 from datetime import datetime
 
+from celery.exceptions import OperationalError
+
 from django.db.models import Count, Max
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -176,7 +178,10 @@ def stats(request):
     satellites = cache.get('stats_satellites')
     observers = cache.get('stats_observers')
     if not satellites or not observers:
-        cache_statistics.delay()
+        try:
+            cache_statistics.delay()
+        except OperationalError:
+            pass
     return render(request, 'base/stats.html', {'satellites': satellites,
                                                'observers': observers})
 
