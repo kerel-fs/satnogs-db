@@ -118,10 +118,10 @@ $(document).ready(function() {
     var all_orbits = get_orbits(sat);
 
     var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/pierros/cj8kftshl4zll2slbelhkndwo',
-      zoom: 2,
-      center: sat_location
+        container: 'map',
+        style: 'mapbox://styles/pierros/cj8kftshl4zll2slbelhkndwo',
+        zoom: 2,
+        center: sat_location
     });
 
     map.addControl(new mapboxgl.NavigationControl());
@@ -209,9 +209,6 @@ $(document).ready(function() {
                 'fill-opacity': 0.2
             }
         });
-
-        console.log(map.getSource('sat_footprint'));
-        console.log(map.getLayer('sat_footprint'));
 
         function update_map() {
             // Recalculate footprint and current satellite location
