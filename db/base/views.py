@@ -1,8 +1,8 @@
 import ephem
 import logging
-import requests
 from datetime import datetime
 
+from django.db.models import Count, Max
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -96,20 +96,11 @@ def satellite(request, norad):
     except:
         latest_frame = ''
 
-    url = '{0}{1}'.format(settings.SATELLITE_POSITION_ENDPOINT, norad)
-
-    try:
-        sat_position = requests.get(url).json()
-    except:
-        sat_position = ''
-
     return render(request, 'base/satellite.html', {'satellite': satellite,
                                                    'suggestions': suggestions,
                                                    'modes': modes,
                                                    'latest_frame': latest_frame,
                                                    'telemetry_data_count': telemetry_data_count,
-                                                   'sat_position': sat_position,
-                                                   'mapbox_id': settings.MAPBOX_MAP_ID,
                                                    'mapbox_token': settings.MAPBOX_TOKEN})
 
 

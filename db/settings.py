@@ -242,7 +242,13 @@ CSP_IMG_SRC = (
     'https://*.gravatar.com',
     'https://*.mapbox.com',
     'https://*.google-analytics.com',
+    'data:',
+    'blob:',
 )
+CSP_CHILD_SRC = (
+    'blob:',
+)
+
 SECURE_HSTS_SECONDS = getenv('SECURE_HSTS_SECONDS', 31536000)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -263,7 +269,6 @@ SATELLITE_POSITION_ENDPOINT = getenv('SATELLITE_POSITION_ENDPOINT',
 
 # Mapbox API
 MAPBOX_GEOCODE_URL = 'https://api.tiles.mapbox.com/v4/geocode/mapbox.places/'
-MAPBOX_MAP_ID = getenv('MAPBOX_MAP_ID', '')
 MAPBOX_TOKEN = getenv('MAPBOX_TOKEN', '')
 
 # Metrics
