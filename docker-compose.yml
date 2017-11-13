@@ -19,7 +19,7 @@ services:
       - db
       - redis
     environment:
-      - ENVIRONMENT=stage
+      - ENVIRONMENT=dev
       - DEBUG=True
       - DATABASE_URL=mysql://satnogsdb:satnogsdb@db/satnogsdb
       - CACHE_BACKEND=redis_cache.RedisCache
@@ -40,7 +40,7 @@ services:
       - redis
       - celery
     environment:
-      - ENVIRONMENT=stage
+      - ENVIRONMENT=dev
       - DEBUG=True
       - DATABASE_URL=mysql://satnogsdb:satnogsdb@db/satnogsdb
       - CACHE_BACKEND=redis_cache.RedisCache
