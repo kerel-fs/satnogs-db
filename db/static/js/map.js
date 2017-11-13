@@ -203,8 +203,11 @@ $(document).ready(function() {
 
         map.addLayer({
             'id': 'sat_footprint',
-            'type': 'line',
-            'source': 'sat_footprint'
+            'type': 'fill',
+            'source': 'sat_footprint',
+            'paint': {
+                'fill-opacity': 0.2
+            }
         });
 
         console.log(map.getSource('sat_footprint'));
