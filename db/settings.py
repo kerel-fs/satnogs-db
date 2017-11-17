@@ -134,6 +134,13 @@ MEDIA_ROOT = Path('media').resolve()
 MEDIA_URL = '/media/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 SATELLITE_DEFAULT_IMAGE = '/static/img/sat.png'
+COMPRESS_ENABLED = getenv('COMPRESS_ENABLED', False)
+COMPRESS_OFFLINE = getenv('COMPRESS_OFFLINE', False)
+COMPRESS_CACHE_BACKEND = getenv('COMPRESS_CACHE_BACKEND', 'default')
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.rCSSMinFilter'
+]
 
 # App conf
 ROOT_URLCONF = 'db.urls'
@@ -222,7 +229,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.DjangoFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
 
