@@ -28,17 +28,19 @@ THIRD_PARTY_APPS = (
     'crispy_forms',
     'compressor',
     'csp',
-    'opbeat.contrib.django',
 )
 LOCAL_APPS = (
     'db.base',
     'db.api',
 )
-
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+if ENVIRONMENT == 'production':
+    INSTALLED_APPS += (
+        'opbeat.contrib.django',
+    )
 
 # Middlware
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,9 +48,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
-    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
-    'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
 )
+if ENVIRONMENT == 'production':
+    MIDDLEWARE += (
+        'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
+        'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
+    )
 
 # Email
 if DEBUG:
